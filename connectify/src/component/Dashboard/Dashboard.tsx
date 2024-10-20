@@ -10,7 +10,7 @@ import {
 import {Link} from "react-router-dom";
 import { motion } from "framer-motion";
 import { useRecoilState,useRecoilValue } from "recoil";
-import {user} from "../../recoil/atom";
+import {user,apiURL} from "../../recoil/atom";
 import { cn } from "../../lib/utils";
 import MainDashboard from "./MainDashboard";
 import axios from "axios";
@@ -51,11 +51,12 @@ export default function Dashboar() {
   ];
 
   const [open, setOpen] = useState(false);
+  const url = useRecoilValue(apiURL);
 
   const [userState, setUserState] = useRecoilState(user);
 
   useEffect(()=>{
-    axios.get('http://localhost:3000/api/getuserdetails',{withCredentials:true}).then((res)=>{
+    axios.get(`http://${url}/api/getuserdetails`,{withCredentials:true}).then((res)=>{
       setUserState(res.data.user);
     }).catch((err)=>{
       console.log(err);
