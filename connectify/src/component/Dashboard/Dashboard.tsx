@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./sidebar";
 import {
   IconArrowLeft,
@@ -9,8 +9,14 @@ import {
 } from "@tabler/icons-react";
 import {Link} from "react-router-dom";
 import { motion } from "framer-motion";
-
+import { useRecoilState,useRecoilValue } from "recoil";
+import {user} from "../../recoil/atom";
 import { cn } from "../../lib/utils";
+import MainDashboard from "./MainDashboard";
+import axios from "axios";
+import {ChakraProvider} from "@chakra-ui/react";
+import Videocall from "../VideoCall/videocall";
+
 
 export default function Dashboar() {
   const links = [
@@ -43,7 +49,19 @@ export default function Dashboar() {
       ),
     },
   ];
+
   const [open, setOpen] = useState(false);
+
+  const [userState, setUserState] = useRecoilState(user);
+
+  useEffect(()=>{
+    axios.get('http://localhost:3000/api/getuserdetails',{withCredentials:true}).then((res)=>{
+      setUserState(res.data.user);
+    }).catch((err)=>{
+      console.log(err);
+    })
+  },[])
+
   return (
     <div
       className={cn(
@@ -52,7 +70,7 @@ export default function Dashboar() {
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10">
+        <SidebarBody className="justify-between gap-10 bg-cyan-200">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
@@ -64,7 +82,7 @@ export default function Dashboar() {
           <div>
           <SidebarLink
               link={{
-                label: "Manu Arora",
+                label: userState.name,
                 href: "#",
                 icon: (
                   <img
@@ -114,7 +132,10 @@ export const LogoIcon = () => {
 
 // Dummy dashboard component with content
 const Dashboard = () => {
-  return (
+
+const userState = useRecoilValue(user);
+
+  if(userState._id === '' )return (
     <div className="flex flex-1">
       <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
         <div className="flex gap-2">
@@ -136,4 +157,8 @@ const Dashboard = () => {
       </div>
     </div>
   );
+  else return <ChakraProvider>
+                <MainDashboard/>
+                <Videocall/>
+              </ChakraProvider>
 };
