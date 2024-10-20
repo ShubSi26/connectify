@@ -3,8 +3,8 @@ import {Input,Button} from "@nextui-org/react";
 import { useToast } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import {websocketstate,callerid} from "../../recoil/atom";
-import { useSetRecoilState,useRecoilState } from 'recoil';
+import {websocketstate,callerid,apiURL} from "../../recoil/atom";
+import { useSetRecoilState,useRecoilState,useRecoilValue} from 'recoil';
 
 
 
@@ -13,6 +13,7 @@ export default function MainDashboard() {
     const emil = useRef<HTMLInputElement>(null);
 
     const [contact, setContact] = useState<any>(null);
+    const url = useRecoilValue(apiURL);
 
     const [flag, setFlag] = useState(false);
 
@@ -23,7 +24,7 @@ export default function MainDashboard() {
         
         let ws: WebSocket
         const connect = () => {
-            ws = new WebSocket("ws://localhost:3000");
+            ws = new WebSocket(`ws://${url}`);
 
             ws.onopen = () => {
                 toast({
@@ -62,7 +63,7 @@ export default function MainDashboard() {
 
     function ontype(){
         if(emil.current?.value === "")return;
-        axios.post("http://localhost:3000/api/finduser",{email:emil.current?.value},{withCredentials:true})
+        axios.post(`http://${url}/api/finduser`,{email:emil.current?.value},{withCredentials:true})
         .then((res)=>{
             setFlag(true);
             setContact(res.data.user);
@@ -91,9 +92,10 @@ export default function MainDashboard() {
 function Contacts(){
     
     const [contacts, setContacts] = useState<Contact[]>([]);
+    const url = useRecoilValue(apiURL);
 
     useEffect(()=>{
-        axios.get("http://localhost:3000/api/getcontacts",{withCredentials:true}).then((res)=>{
+        axios.get(`http://${url}/api/getcontacts`,{withCredentials:true}).then((res)=>{
             console.log(res.data.contacts);
             setContacts(res.data.contacts);
         }).catch((err)=>{
@@ -143,9 +145,10 @@ function ContactCard({contact}: { contact: Contact }){
 
 
 function UserProfile({contact} :{contact:any}){
+    const url = useRecoilValue(apiURL);
 
     function onAdd(){
-        axios.post("http://localhost:3000/api/adduser",{ email: contact.email },{withCredentials:true}).then((res)=>{
+        axios.post(`http://${url}/api/adduser`,{ email: contact.email },{withCredentials:true}).then((res)=>{
             console.log(res.data.message);
         }).catch((err)=>{
             console.log(err);

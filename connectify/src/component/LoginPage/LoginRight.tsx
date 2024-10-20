@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
 import { useToast,ChakraProvider } from '@chakra-ui/react';
-import { useSetRecoilState } from "recoil";
-import { logined } from "../../recoil/atom";
+import { useSetRecoilState ,useRecoilValue} from "recoil";
+import { logined ,apiURL} from "../../recoil/atom";
 
 
 export default function LoginRight() {
@@ -12,6 +12,7 @@ export default function LoginRight() {
     const Navigate = useNavigate();
     const toast = useToast()
     const setLogined = useSetRecoilState(logined);
+    const api = useRecoilValue(apiURL);
 
     const email = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
@@ -21,7 +22,7 @@ export default function LoginRight() {
             email: email.current?.value,
             password: password.current?.value
         }
-        axios.post('http://localhost:3000/api/login', user, {withCredentials: true})
+        axios.post(`http://${api}/api/login`, user, {withCredentials: true})
         .then((res) => {
             toast({
                 title: 'Account created.',

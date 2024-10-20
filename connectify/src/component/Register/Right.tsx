@@ -3,11 +3,14 @@ import { useNavigate} from "react-router-dom";
 import {useRef} from "react";
 import { useToast,ChakraProvider } from '@chakra-ui/react';
 import axios from "axios";
+import { apiURL } from "../../recoil/atom";
+import { useRecoilValue } from "recoil";
 
 export default function Right() {  
 
     const Navigate = useNavigate();
     const toast = useToast();
+    const url = useRecoilValue(apiURL);
 
     const name = useRef<HTMLInputElement>(null);
     const email = useRef<HTMLInputElement>(null);
@@ -21,7 +24,7 @@ export default function Right() {
         }
         console.log(user);
         
-        axios.post('http://localhost:3000/api/register', user)
+        axios.post(`http://${url}/api/register`, user)
         .then((res) => {
             toast({
                 title: 'Account created.',

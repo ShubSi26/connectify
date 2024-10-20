@@ -29,3 +29,9 @@ export const callerid = atom<String | null>({
     key:"caller",
     default:null,
 })
+
+export const apiURL = atom({
+    key:"api",
+    default:"localhost:3000"
+})
+
