@@ -3,7 +3,7 @@ import {Input,Button} from "@nextui-org/react";
 import { useToast } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import {websocketstate,callerid,apiURL} from "../../recoil/atom";
+import {websocketstate,callerid,apiURL,wsURL} from "../../recoil/atom";
 import { useSetRecoilState,useRecoilState,useRecoilValue} from 'recoil';
 
 
@@ -14,6 +14,7 @@ export default function MainDashboard() {
 
     const [contact, setContact] = useState<any>(null);
     const url = useRecoilValue(apiURL);
+    const wsurl = useRecoilValue(wsURL);
 
     const [flag, setFlag] = useState(false);
 
@@ -24,7 +25,7 @@ export default function MainDashboard() {
         
         let ws: WebSocket
         const connect = () => {
-            ws = new WebSocket(`ws://${url}`);
+            ws = new WebSocket(`${wsurl}`);
 
             ws.onopen = () => {
                 toast({
@@ -63,7 +64,7 @@ export default function MainDashboard() {
 
     function ontype(){
         if(emil.current?.value === "")return;
-        axios.post(`http://${url}/api/finduser`,{email:emil.current?.value},{withCredentials:true})
+        axios.post(`${url}/api/finduser`,{email:emil.current?.value},{withCredentials:true})
         .then((res)=>{
             setFlag(true);
             setContact(res.data.user);
@@ -95,7 +96,7 @@ function Contacts(){
     const url = useRecoilValue(apiURL);
 
     useEffect(()=>{
-        axios.get(`http://${url}/api/getcontacts`,{withCredentials:true}).then((res)=>{
+        axios.get(`${url}/api/getcontacts`,{withCredentials:true}).then((res)=>{
             console.log(res.data.contacts);
             setContacts(res.data.contacts);
         }).catch((err)=>{
@@ -148,7 +149,7 @@ function UserProfile({contact} :{contact:any}){
     const url = useRecoilValue(apiURL);
 
     function onAdd(){
-        axios.post(`http://${url}/api/adduser`,{ email: contact.email },{withCredentials:true}).then((res)=>{
+        axios.post(`${url}/api/adduser`,{ email: contact.email },{withCredentials:true}).then((res)=>{
             console.log(res.data.message);
         }).catch((err)=>{
             console.log(err);

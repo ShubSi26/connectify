@@ -10,7 +10,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors({
-    origin: 'http://localhost:5173', 
+    origin: 'https://verbose-tribble-x7q9gx44w6vhqww-5173.app.github.dev', 
     credentials: true 
   }));
 app.use(express.json());

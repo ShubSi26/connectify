@@ -40,6 +40,8 @@ export function WS_SERVER(server: http.Server) {
           const data = JSON.parse(message.toString());
           const { type, userId } = data;
 
+          console.log(data);
+
           if(type === 'offer'){
             const socket = userSocket[userId];
             if(socket){
@@ -56,6 +58,7 @@ export function WS_SERVER(server: http.Server) {
 
           if(type === 'ICEcandidate'){
             const socket = userSocket[userId];
+            console.log(data)
             if(socket){
               socket.send(JSON.stringify({ type: 'ICEcandidate', candidate: data.candidate,userId:id.id }));
             }

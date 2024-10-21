@@ -56,7 +56,7 @@ export default function Dashboar() {
   const [userState, setUserState] = useRecoilState(user);
 
   useEffect(()=>{
-    axios.get(`http://${url}/api/getuserdetails`,{withCredentials:true}).then((res)=>{
+    axios.get(`${url}/api/getuserdetails`,{withCredentials:true}).then((res)=>{
       setUserState(res.data.user);
     }).catch((err)=>{
       console.log(err);

@@ -22,7 +22,7 @@ export default function LoginRight() {
             email: email.current?.value,
             password: password.current?.value
         }
-        axios.post(`http://${api}/api/login`, user, {withCredentials: true})
+        axios.post(`${api}/api/login`, user, {withCredentials: true})
         .then((res) => {
             toast({
                 title: 'Account created.',
