@@ -158,8 +158,12 @@ const userState = useRecoilValue(user);
       </div>
     </div>
   );
-  else return <ChakraProvider>
-                <MainDashboard/>
-                <Videocall/>
-              </ChakraProvider>
+  else return <div className="w-full h-max flex flex-row">
+                <ChakraProvider>
+                  <MainDashboard/>
+                  <div className="w-full">
+                    <Videocall/>
+                  </div>
+                </ChakraProvider>
+              </div>
 };

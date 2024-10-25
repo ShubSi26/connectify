@@ -35,6 +35,7 @@ router.post('/', async (req: Request, res: Response) => {
             httpOnly: true,
             secure: false,  
             sameSite: 'lax', 
+            maxAge: 24 * 60 * 60 * 1000
           });
         res.status(200).json({ message: 'Login successful' });
 
