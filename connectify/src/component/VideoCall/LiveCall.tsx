@@ -11,6 +11,7 @@ export default function LiveCall({
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const video2 = useRef<HTMLVideoElement>(null);
+
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
 
@@ -67,7 +68,7 @@ export default function LiveCall({
   }, [isDragging]);
 
   return (
-    <div className="flex flex-row justify-center items-center h-full">
+    <div className="flex sm:flex-row sm:justify-center sm:items-center h-full overflow-auto">
       <video
         ref={video}
         autoPlay
@@ -78,13 +79,16 @@ export default function LiveCall({
         ref={video2}
         autoPlay
         playsInline
-        onMouseDown={handleMouseDown}
-        className="rounded-2xl h-44 absolute"
-        style={{
-          bottom: position.y,
-          right: position.x,
-          transform: `translate(-${position.x}px, -${position.y}px)`,
-        }}
+        className="rounded-2xl w-96 absolute"
+        style={
+          window.innerWidth > 768
+            ? {
+                bottom: -280,
+                right: -10,
+                transform: `translate(${position.x}px, ${position.y}px)`,
+              }
+            : {}
+        }
       />
     </div>
   );

@@ -11,6 +11,7 @@ import { useSetRecoilState,useRecoilState,useRecoilValue} from 'recoil';
 export default function MainDashboard() {
 
     const emil = useRef<HTMLInputElement>(null);
+    const timeout = useRef<any>(null);
 
     const [contact, setContact] = useState<any>(null);
     const url = useRecoilValue(apiURL);
@@ -28,6 +29,7 @@ export default function MainDashboard() {
             ws = new WebSocket(`${wsurl}`);
 
             ws.onopen = () => {
+                clearTimeout(timeout.current);
                 toast({
                     title: 'Connected',
                     description: "Connected to server",
@@ -45,7 +47,8 @@ export default function MainDashboard() {
                     duration: 2000,
                     isClosable: true,
                 });
-                setTimeout(() => {
+                clearTimeout(timeout.current);
+                timeout.current = setTimeout(() => {
                     connect();
                 }, 3000);
             };
@@ -76,10 +79,10 @@ export default function MainDashboard() {
     useEffect(()=>{},[flag])
 
     return(<>
-        <div className="h-max w-max flex justify-center items-center flex-col m-4">
-            <div className='flex'>
+        <div className="h-max w-full sm:w-max flex justify-center items-center flex-col sm:m-4">
+            <div className='flex '>
                 {flag === false ?<IconUserSearch className='h-8 w-8'/> : <IconX onClick={()=>setFlag(false)} className='h-8 w-8 cursor-pointer'/>}
-                <Input ref={emil} placeholder='Search User' className='w-96'/>
+                <Input ref={emil} placeholder='Search User' className='sm:w-96'/>
                 <IconArrowRight onClick={ontype} className='h-10 w-10 cursor-pointer'/>
             </div>
             {flag === false ? <Contacts/> : <UserProfile contact={contact}/>}
@@ -110,7 +113,7 @@ function Contacts(){
         </div>
     </>)
     else return (<>
-        <div className="h-full w-max flex flex-col justify-center items-center">
+        <div className="h-full w-full flex flex-col justify-center items-center">
             {contacts.map((contact)=>{
                 return <ContactCard key={contact._id} contact={contact}/>
             })}
@@ -133,7 +136,7 @@ function ContactCard({contact}: { contact: Contact }){
     }
 
     return(<>
-        <div className="h-20 w-96 flex justify-between items-center bg-gray-200 dark:bg-gray-800 rounded-lg p-4 m-2">
+        <div className="h-20 w-full sm:w-96 flex justify-between items-center bg-gray-200 dark:bg-gray-800 rounded-lg sm:p-4 m-2">
             <div className="flex items-center">
                 <h1 className="ml-4">{contact.name}</h1>
             </div>
@@ -157,7 +160,7 @@ function UserProfile({contact} :{contact:any}){
     }
 
     return(
-        <div className="h-full w-full flex flex-row justify-between items-center border-2 rounded p-2 hover:bg-slate-200">
+        <div className="h-full w-full flex flex-row justify-between items-center border-2 rounded sm:p-2 hover:bg-slate-200">
             <div>
                 <h1 className='text-2xl'>{contact.name}</h1>
                 <h1>{contact.email}</h1>

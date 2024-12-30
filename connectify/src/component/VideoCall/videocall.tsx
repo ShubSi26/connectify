@@ -37,7 +37,6 @@ const Videocall: React.FC = () => {
 
   const createPeerConnection = () => {
     const peerConnection = new RTCPeerConnection(configuration);
-    peerConnection.oniceconnectionstatechange = iceconnectionstate;
 
     return peerConnection;
   }
@@ -205,6 +204,7 @@ const Videocall: React.FC = () => {
           websocket?.send(JSON.stringify({ type: "ICEcandidate", candidate: event.candidate, userId: Caller }));
         }
       };
+      peerConnection.oniceconnectionstatechange = iceconnectionstate;
     }
 
   }, [peerConnection, Caller]);

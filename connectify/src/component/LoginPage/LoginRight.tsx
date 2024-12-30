@@ -49,11 +49,11 @@ export default function LoginRight() {
     }
 
     return (
-        <div className="w-1/2 flex justify-center items-center flex-col gap-4">
+        <div className="sm:w-1/2 flex justify-center items-center flex-col gap-4">
             <div className="text-3xl font-bold">
                 Login
             </div>
-            <div className=" w-2/5 flex justify-center items-center flex-col gap-3">
+            <div className=" sm:w-2/5 flex justify-center items-center flex-col gap-3">
                 <Input type="email" label="Email" ref={email} />
                 <Input type="password" label="Password" ref={password} />
             </div>

@@ -158,7 +158,7 @@ const userState = useRecoilValue(user);
       </div>
     </div>
   );
-  else return <div className="w-full h-max flex flex-row">
+  else return <div className="w-full h-max flex flex-col sm:flex-row">
                 <ChakraProvider>
                   <MainDashboard/>
                   <div className="w-full">

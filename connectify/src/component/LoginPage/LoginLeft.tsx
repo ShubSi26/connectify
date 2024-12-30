@@ -2,7 +2,7 @@
 
 export default function LoginLeft() {
     return(<>
-        <div className="w-1/2 h-screen bg-black">
+        <div className="sm:w-1/2 h-1/2 sm:h-screen bg-black">
             hello
         </div>
    </>)
