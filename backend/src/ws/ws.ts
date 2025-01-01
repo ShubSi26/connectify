@@ -44,8 +44,11 @@ export function WS_SERVER(server: http.Server) {
 
           if(type === 'offer'){
             const socket = userSocket[userId];
+
             if(socket){
               socket.send(JSON.stringify({ type: 'offer', offer: data.offer,userId:id.id }));
+            }else{
+              ws.send(JSON.stringify({ type: 'call-rejected',message:'User is offline', userId:id.id }));
             }
           }
 
@@ -71,10 +74,10 @@ export function WS_SERVER(server: http.Server) {
             }
           }
 
-
     });
 
         ws.on('close', () => {
+          userSocket.delete(id.id);
             console.log('Client disconnected');
         });
     });

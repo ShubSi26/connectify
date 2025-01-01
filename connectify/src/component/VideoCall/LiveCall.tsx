@@ -2,11 +2,9 @@ import { useRef, useEffect, useState } from "react";
 
 export default function LiveCall({
   peerConnectionRef,
-  f,
   mediaStream,
 }: {
   peerConnectionRef: RTCPeerConnection | null;
-  f: boolean;
   mediaStream: MediaStream | null;
 }) {
   const video = useRef<HTMLVideoElement>(null);
@@ -32,7 +30,7 @@ export default function LiveCall({
     if (mediaStream && video2.current) {
       video2.current.srcObject = mediaStream;
     }
-  }, [peerConnectionRef, f]);
+  }, [peerConnectionRef]);
 
   // Event handlers for dragging
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -68,7 +66,7 @@ export default function LiveCall({
   }, [isDragging]);
 
   return (
-    <div className="flex sm:flex-row sm:justify-center sm:items-center h-full overflow-auto">
+    <div className="flex sm:justify-center sm:items-center h-screen overflow-auto">
       <video
         ref={video}
         autoPlay
@@ -79,16 +77,8 @@ export default function LiveCall({
         ref={video2}
         autoPlay
         playsInline
-        className="rounded-2xl w-96 absolute"
-        style={
-          window.innerWidth > 768
-            ? {
-                bottom: -280,
-                right: -10,
-                transform: `translate(${position.x}px, ${position.y}px)`,
-              }
-            : {}
-        }
+        className="rounded-2xl w-96 fixed z-10 bottom-0 right-0"
+        
       />
     </div>
   );

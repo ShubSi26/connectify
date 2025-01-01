@@ -3,8 +3,8 @@ import { useToast } from '@chakra-ui/react';
 import { websocketstate, callerid } from '../../recoil/atom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Calling from './Calling';
-import Default from './Default';
 import LiveCall from './LiveCall';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Videocall: React.FC = () => {
 
@@ -30,8 +30,7 @@ const Videocall: React.FC = () => {
         duration: 4000,
         isClosable: true,
       });
-      setCaller(null);
-      setState(0);
+      navigate("/dashboard");
     }
   }
 
@@ -41,14 +40,11 @@ const Videocall: React.FC = () => {
     return peerConnection;
   }
 
- 
-
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
 
   const intervalRef = useRef<number | null>(null);
-  
-
-  const [Caller, setCaller] = useRecoilState(callerid);
+  const location = useLocation();
+  const dataa = location.state;
   const websocket = useRecoilValue(websocketstate);
 
   const [state,setState] = useState(0);
@@ -56,14 +52,15 @@ const Videocall: React.FC = () => {
   // Consider using a public STUN server list (e.g., from Xirsys or Coturn)
 
   const toast = useToast();
+  const navigate = useNavigate();
 
   async function connection() {
 
-    if (Caller && websocket && peerConnection) {
+    if (dataa.type === "call" && websocket && peerConnection) {
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
 
-      websocket.send(JSON.stringify({ type: "offer", offer: offer, userId: Caller }));
+      websocket.send(JSON.stringify({ type: "offer", offer: offer, userId: dataa.id }));
 
       setState(1);
       intervalRef.current = setTimeout(() => {
@@ -76,16 +73,23 @@ const Videocall: React.FC = () => {
         });
         intervalRef.current && clearInterval(intervalRef.current);
         intervalRef.current = null;
-        setCaller(null);
-        setState(0);
+        navigate("/dashboard");
       },30000);
+    }
+    if(dataa.type === "offer" && peerConnection){
+      await acceptCall(dataa,peerConnection);
+      setState(1);
     }
   }
 
   useEffect(() => {
-    
-    if(Caller !== null) connection();
-  }, [Caller]);
+    if(peerConnection && mediaStream){
+      mediaStream.getTracks().forEach(track => {
+        peerConnection.addTrack(track, mediaStream);
+      });
+      connection();
+    }
+  }, [peerConnection]);
 
   
   async function acceptCall(data: any,peerConnection1:RTCPeerConnection | null) {
@@ -150,32 +154,17 @@ const Videocall: React.FC = () => {
     }
   },[mediaStream]);
 
-  useEffect(()=>{
-    if(peerConnection && mediaStream){
-      mediaStream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, mediaStream);
-      });
-    }
-  },[peerConnection]);
-
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = async (event) => {
         const data = JSON.parse(event.data);
 
-        // Handle incoming offer
-        if (data.type === "offer") {
-          await acceptCall(data,peerConnection);
-          setState(2);
-          setFlag((prev) => !prev);
-        }
         // Handle incoming answer
         if (data.type === "answer") {
           intervalRef.current && clearInterval(intervalRef.current);
           console.log("Call accepted:", data);
           await answerCall(data,peerConnection);
-          setState(2);
-          setFlag((prev) => !prev);
+          setState(1);
         }
 
         // Handle incoming ICE candidates
@@ -184,9 +173,13 @@ const Videocall: React.FC = () => {
         }
         // Handle call rejection
         if (data.type === "call-rejected") {
+          intervalRef.current && clearInterval(intervalRef.current);
+          peerConnection?.close();
+          setperrConnection(null);
+          navigate("/dashboard");
           toast({
             title: 'Call rejected',
-            description: 'The user rejected the call',
+            description: data.message || 'The user rejected the call',
             status: 'error',
             duration: 5000,
             isClosable: true,
@@ -201,20 +194,19 @@ const Videocall: React.FC = () => {
     if(peerConnection){
       peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
-          websocket?.send(JSON.stringify({ type: "ICEcandidate", candidate: event.candidate, userId: Caller }));
+          websocket?.send(JSON.stringify({ type: "ICEcandidate", candidate: event.candidate, userId: dataa.id || dataa.userId }));
         }
       };
       peerConnection.oniceconnectionstatechange = iceconnectionstate;
     }
 
-  }, [peerConnection, Caller]);
+  }, [peerConnection]);
 
 
   return (
     <div>
-      {state === 0 && <Default mediaStream={mediaStream}/>}
-      {state === 1 && <Calling name={Caller || "e"} mediaStream={mediaStream}/>}
-      {state === 2 && <LiveCall peerConnectionRef={peerConnection} f={flag} mediaStream={mediaStream}/>}
+      {state === 0 && <Calling name={dataa.id || "e"} mediaStream={mediaStream}/>}
+      {state === 1 && <LiveCall peerConnectionRef={peerConnection} mediaStream={mediaStream}/>}
     </div>
   )
 };

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import {websocketstate,callerid,apiURL,wsURL} from "../../recoil/atom";
 import { useSetRecoilState,useRecoilState,useRecoilValue} from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -19,8 +20,9 @@ export default function MainDashboard() {
 
     const [flag, setFlag] = useState(false);
 
-    const setWebSocket = useSetRecoilState(websocketstate);
+    const [webs,setWebSocket] = useRecoilState(websocketstate);
     const toast = useToast();
+    const navigate = useNavigate();
 
     useEffect(()=>{
         
@@ -56,14 +58,21 @@ export default function MainDashboard() {
             setWebSocket(ws);
         };
 
-    connect();
+    if(webs === null)connect();
 
-    return () => {
-        if (ws) {
-            ws.close();
-        }
-    };
     },[])
+
+    useEffect(()=>{
+        if(webs){
+            webs.onmessage = async (event) => {
+                const data = JSON.parse(event.data);
+                // Handle incoming offer
+                if (data.type === "offer") {
+                  navigate('/meeting',{state:data});
+                }
+            }
+        }
+    },[webs])
 
     function ontype(){
         if(emil.current?.value === "")return;
@@ -79,7 +88,7 @@ export default function MainDashboard() {
     useEffect(()=>{},[flag])
 
     return(<>
-        <div className="h-max w-full sm:w-max flex justify-center items-center flex-col sm:m-4">
+        <div className="h-full w-full sm:w-max flex justify-center items-center flex-col p-2 bg-white">
             <div className='flex '>
                 {flag === false ?<IconUserSearch className='h-8 w-8'/> : <IconX onClick={()=>setFlag(false)} className='h-8 w-8 cursor-pointer'/>}
                 <Input ref={emil} placeholder='Search User' className='sm:w-96'/>
@@ -113,7 +122,7 @@ function Contacts(){
         </div>
     </>)
     else return (<>
-        <div className="h-full w-full flex flex-col justify-center items-center">
+        <div className="h-full w-full flex flex-col">
             {contacts.map((contact)=>{
                 return <ContactCard key={contact._id} contact={contact}/>
             })}
@@ -129,10 +138,9 @@ interface Contact {
 
 function ContactCard({contact}: { contact: Contact }){
     const [caller,setCallerId] = useRecoilState(callerid);
+    const navigate = useNavigate();
     function call(id:String){
-        console.log(id);
-        setCallerId(null);
-        setTimeout(() => setCallerId(id), 0);
+        navigate('/meeting',{state:{type:'call',id:id}});
     }
 
     return(<>

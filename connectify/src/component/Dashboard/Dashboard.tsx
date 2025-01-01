@@ -15,7 +15,7 @@ import { cn } from "../../lib/utils";
 import MainDashboard from "./MainDashboard";
 import axios from "axios";
 import {ChakraProvider} from "@chakra-ui/react";
-import Videocall from "../VideoCall/videocall";
+import sampleimage from "../../assets/sample.png";
 
 
 export default function Dashboar() {
@@ -35,7 +35,7 @@ export default function Dashboar() {
       ),
     },
     {
-      label: "Settings",
+      label: "Request",
       href: "#",
       icon: (
         <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
@@ -158,12 +158,24 @@ const userState = useRecoilValue(user);
       </div>
     </div>
   );
-  else return <div className="w-full h-max flex flex-col sm:flex-row">
+  else return <div className="w-full h-full flex flex-col sm:flex-row">
                 <ChakraProvider>
                   <MainDashboard/>
                   <div className="w-full">
-                    <Videocall/>
+                    <Rightbox/>
                   </div>
                 </ChakraProvider>
               </div>
 };
+
+function Rightbox(){
+  return(
+    <div className="h-full w-full flex justify-center items-center">
+       <div className="flex justify-center items-center flex-col">
+        <img src={sampleimage} alt="video call" className="h-96 w-110"/>
+        <div>Welcome, [User's Name]! Ready to connect with your team or loved ones?</div>
+        <div>Start or join a call now!</div>
+       </div>
+    </div>
+  )
+}
