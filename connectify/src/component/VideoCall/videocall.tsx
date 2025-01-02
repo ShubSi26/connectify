@@ -16,10 +16,12 @@ const Videocall: React.FC = () => {
   };
   const [peerConnection,setperrConnection] = useState<RTCPeerConnection | null>(null);
 
+  const [flag,setFlag] = useState(false);
+
   function iceconnectionstate(){
     if(peerConnection === null) return;
     const state = peerConnection?.iceConnectionState;
-    console.log("ICE connection state change:", state);
+
     if(state === "disconnected" || state === "failed" || state === "closed"){
       toast({
         title: 'Call ended',
@@ -45,7 +47,7 @@ const Videocall: React.FC = () => {
   const dataa = location.state;
   const websocket = useRecoilValue(websocketstate);
 
-  const [state,setState] = useState(1);
+  const [state,setState] = useState(0);
 
   // Consider using a public STUN server list (e.g., from Xirsys or Coturn)
 
@@ -57,9 +59,10 @@ const Videocall: React.FC = () => {
     if (dataa.type === "call" && websocket && peerConnection) {
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
-      setState(1);
+
       websocket.send(JSON.stringify({ type: "offer", offer: offer, userId: dataa.id }));
-      
+
+      setState(1);
       intervalRef.current = setTimeout(() => {
         toast({
           title: 'Call ended',
@@ -74,9 +77,8 @@ const Videocall: React.FC = () => {
       },30000);
     }
     if(dataa.type === "offer" && peerConnection){
-      setState(1);
       await acceptCall(dataa,peerConnection);
-      
+      setState(1);
     }
   }
 
@@ -161,13 +163,12 @@ const Videocall: React.FC = () => {
         if (data.type === "answer") {
           intervalRef.current && clearInterval(intervalRef.current);
           console.log("Call accepted:", data);
-          setState(1);
           await answerCall(data,peerConnection);
+          setState(1);
         }
 
         // Handle incoming ICE candidates
         if (data.type === "ICEcandidate") {
-          console.log("ice");
           await peerConnection?.addIceCandidate(new RTCIceCandidate(data.candidate));
         }
         // Handle call rejection
@@ -200,6 +201,7 @@ const Videocall: React.FC = () => {
     }
 
   }, [peerConnection]);
+
 
   return (
     <div>
