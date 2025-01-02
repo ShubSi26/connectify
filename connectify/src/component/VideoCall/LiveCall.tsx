@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 
 export default function LiveCall({
   peerConnectionRef,
@@ -9,9 +9,6 @@ export default function LiveCall({
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const video2 = useRef<HTMLVideoElement>(null);
-
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (video.current && peerConnectionRef) {
@@ -31,39 +28,6 @@ export default function LiveCall({
       video2.current.srcObject = mediaStream;
     }
   }, [peerConnectionRef]);
-
-  // Event handlers for dragging
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return;
-    setPosition((prev) => ({
-      x: prev.x - e.movementX,
-      y: prev.y - e.movementY,
-    }));
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
-    } else {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    }
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDragging]);
 
   return (
     <div className="flex sm:justify-center sm:items-center h-screen overflow-auto">
