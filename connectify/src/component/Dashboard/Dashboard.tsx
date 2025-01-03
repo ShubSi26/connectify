@@ -169,11 +169,12 @@ const userState = useRecoilValue(user);
 };
 
 function Rightbox(){
+  const [userState, setUserState] = useRecoilState(user);
   return(
     <div className="h-full w-full flex justify-center items-center">
        <div className="flex justify-center items-center flex-col">
         <img src={sampleimage} alt="video call" className="h-96 w-110"/>
-        <div>Welcome, [User's Name]! Ready to connect with your team or loved ones?</div>
+        <div>Welcome, {userState.name}! Ready to connect with your team or loved ones?</div>
         <div>Start or join a call now!</div>
        </div>
     </div>

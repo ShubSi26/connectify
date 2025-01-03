@@ -74,6 +74,13 @@ export function WS_SERVER(server: http.Server) {
             }
           }
 
+          if(type === 'call-ended'){
+            const socket = userSocket[userId];
+            if(socket){
+              socket.send(JSON.stringify({ type: 'call-ended', userId:id.id }));
+            }
+          }
+
     });
 
         ws.on('close', () => {

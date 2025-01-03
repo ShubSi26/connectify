@@ -46,6 +46,7 @@ const Videocall: React.FC = () => {
   const location = useLocation();
   const dataa = location.state;
   const websocket = useRecoilValue(websocketstate);
+  const icecandidatebuffer = useRef<any[]>([]);
 
   const [state,setState] = useState(0);
 
@@ -73,8 +74,8 @@ const Videocall: React.FC = () => {
         });
         intervalRef.current && clearInterval(intervalRef.current);
         intervalRef.current = null;
-        navigate("/dashboard");
-      },30000);
+        navigate(-1);
+      },90000);
     }
     if(dataa.type === "offer" && peerConnection){
       await acceptCall(dataa,peerConnection);
@@ -115,7 +116,6 @@ const Videocall: React.FC = () => {
     }
   }
 
-
   useEffect(() => {
     const getUserMedia = async () => {
       try {
@@ -139,14 +139,13 @@ const Videocall: React.FC = () => {
       }
     };
 
-    getUserMedia();
+    if(mediaStream === null)getUserMedia();
 
     return () => {
-      if (mediaStream) {
-        mediaStream.getTracks().forEach(track => track.stop());
-      }
+      console.log("Closing media stream");
+        mediaStream?.getTracks().forEach(track => track.stop());
     };
-  }, []);
+  }, [mediaStream]);
 
   useEffect(()=>{
     if(mediaStream){
@@ -169,14 +168,15 @@ const Videocall: React.FC = () => {
 
         // Handle incoming ICE candidates
         if (data.type === "ICEcandidate") {
-          await peerConnection?.addIceCandidate(new RTCIceCandidate(data.candidate));
+          console.log(peerConnection);
+          await addIceCandidate(data.candidate);
         }
         // Handle call rejection
         if (data.type === "call-rejected") {
           intervalRef.current && clearInterval(intervalRef.current);
           peerConnection?.close();
           setperrConnection(null);
-          navigate("/dashboard");
+          navigate(-1);
           toast({
             title: 'Call rejected',
             description: data.message || 'The user rejected the call',
@@ -185,10 +185,23 @@ const Videocall: React.FC = () => {
             isClosable: true,
           });
         }
+
+        if(data.type === "call-ended"){
+          peerConnection?.close();
+          setperrConnection(null);
+          navigate(-1);
+        }
       };
     }
   }, [websocket,peerConnection]);
 
+  async function addIceCandidate(candidate: any){
+    if(peerConnection){
+      await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    }else{
+      icecandidatebuffer.current.push(candidate);
+    }
+  }
 
   useEffect(() => {
     if(peerConnection){
@@ -198,15 +211,26 @@ const Videocall: React.FC = () => {
         }
       };
       peerConnection.oniceconnectionstatechange = iceconnectionstate;
+      icecandidatebuffer.current.forEach(async (candidate) => {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+      })
     }
 
   }, [peerConnection]);
 
+  const endcallfunction = ()=>{
+    if(peerConnection){
+      peerConnection.close();
+      websocket?.send(JSON.stringify({type:"call-ended",userId: dataa.id || dataa.userId}));
+      setperrConnection(null);
+      navigate(-1);
+    }
+  }
 
   return (
     <div>
       {state === 0 && <Calling name={dataa.id || "e"} mediaStream={mediaStream}/>}
-      {state === 1 && <LiveCall peerConnectionRef={peerConnection} mediaStream={mediaStream}/>}
+      {state === 1 && <LiveCall peerConnectionRef={peerConnection} mediaStream={mediaStream} endcallfunction={endcallfunction}/>}
     </div>
   )
 };

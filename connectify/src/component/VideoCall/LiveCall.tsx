@@ -1,11 +1,14 @@
 import { useRef, useEffect, useState } from "react";
+import { IconVideo } from '@tabler/icons-react';
 
 export default function LiveCall({
   peerConnectionRef,
   mediaStream,
+  endcallfunction
 }: {
   peerConnectionRef: RTCPeerConnection | null;
   mediaStream: MediaStream | null;
+  endcallfunction: () => void;
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const video2 = useRef<HTMLVideoElement>(null);
@@ -66,20 +69,26 @@ export default function LiveCall({
   }, [isDragging]);
 
   return (
-    <div className="flex sm:justify-center sm:items-center h-screen overflow-auto">
-      <video
-        ref={video}
-        autoPlay
-        playsInline
-        className="rounded-2xl h-screen"
-      />
-      <video
-        ref={video2}
-        autoPlay
-        playsInline
-        className="rounded-2xl w-96 fixed z-10 bottom-0 right-0"
+    <div className="p-6 bg-blue-400">
+      <div className="bg-white flex sm:justify-center sm:items-center h-fit p-2 overflow-auto rounded-xl border-2 border-blue-900">
+        <video
+          ref={video}
+          autoPlay
+          playsInline
+          className="rounded-2xl h-screen"
+        />
+        <video
+          ref={video2}
+          autoPlay
+          playsInline
+          className="rounded-2xl w-96 fixed z-10 bottom-0 right-0"
+          
+        />
+        <div onClick = {endcallfunction} className=" bg-red-500 rounded-full cursor-pointer fixed z-10 bottom-0 right-50 p-4">
+          <IconVideo size={80} color="black" stroke={2} />
+        </div>
         
-      />
+      </div>
     </div>
   );
 }
