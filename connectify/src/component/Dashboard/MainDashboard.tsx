@@ -1,13 +1,12 @@
-import { IconUserSearch,IconArrowRight,IconX,IconVideo  } from '@tabler/icons-react';
+import { IconUserSearch,IconArrowRight,IconX,IconVideo,IconPhoneOff } from '@tabler/icons-react';
 import {Input,Button} from "@nextui-org/react";
 import { useToast } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import {websocketstate,callerid,apiURL,wsURL} from "../../recoil/atom";
-import { useSetRecoilState,useRecoilState,useRecoilValue} from 'recoil';
+import {websocketstate,apiURL,wsURL,user} from "../../recoil/atom";
+import { useRecoilState,useRecoilValue} from 'recoil';
 import { useNavigate } from 'react-router-dom';
-
-
+import sampleimage from "../../assets/sample.png";
 
 export default function MainDashboard() {
 
@@ -22,7 +21,7 @@ export default function MainDashboard() {
 
     const [webs,setWebSocket] = useRecoilState(websocketstate);
     const toast = useToast();
-    const navigate = useNavigate();
+    const [incoming, setIncoming] = useState<any>(null);
 
     useEffect(()=>{
         
@@ -61,14 +60,20 @@ export default function MainDashboard() {
     if(webs === null)connect();
 
     },[])
-
+    const icecandidatebuffer = useRef<any[]>([]);
     useEffect(()=>{
         if(webs){
             webs.onmessage = async (event) => {
                 const data = JSON.parse(event.data);
                 // Handle incoming offer
                 if (data.type === "offer") {
-                  navigate('/meeting',{state:data});
+                    setIncoming(data);
+                }
+                if(data.type === "ICEcandidate"){
+                    icecandidatebuffer.current.push(data.candidate);
+                }
+                if(data.type === "call-ended"){
+                    setIncoming(null);
                 }
             }
         }
@@ -96,6 +101,10 @@ export default function MainDashboard() {
             </div>
             {flag === false ? <Contacts/> : <UserProfile contact={contact}/>}
             
+        </div>
+        <div className="w-full">
+            {incoming && <Incomingbox data={incoming} setIncoming={setIncoming} webs={webs} icecandidate={icecandidatebuffer}/>}
+            {incoming === null && <Rightbox/>}
         </div>
     </>)
 }
@@ -137,10 +146,10 @@ interface Contact {
 }
 
 function ContactCard({contact}: { contact: Contact }){
-    const [caller,setCallerId] = useRecoilState(callerid);
+
     const navigate = useNavigate();
     function call(id:String){
-        navigate('/meeting',{state:{type:'call',id:id}});
+        navigate('/meeting',{state:{type:'call',id:id,name:contact.name}});
     }
 
     return(<>
@@ -176,6 +185,62 @@ function UserProfile({contact} :{contact:any}){
             <div>
                 <Button onClick={onAdd} color="primary">Add</Button>
             </div>
+        </div>
+    )
+
+}
+
+function Rightbox(){
+    const userState= useRecoilValue(user);
+    return(
+      <div className="h-full w-full flex justify-center items-center">
+         <div className="flex justify-center items-center flex-col">
+          <img src={sampleimage} alt="video call" className="h-96 w-110"/>
+          <div>Welcome, {userState.name}! Ready to connect with your team or loved ones?</div>
+          <div>Start or join a call now!</div>
+         </div>
+      </div>
+    )
+  }
+
+function Incomingbox({data,setIncoming,webs,icecandidate}:{data:any,setIncoming:React.Dispatch<any>,webs:WebSocket | null,icecandidate:any}){
+
+    const navigate = useNavigate();
+    const icecandidatebuffer = icecandidate.current;
+    
+    useEffect(()=>{
+        const audio = new Audio('public/ringtone.mp3');
+        audio.loop = true;
+        audio.play().catch((error) => {
+        console.error("Error playing audio: ", error);
+        });
+
+        return () => {
+        audio.pause();
+        };
+    },[])
+
+    return(
+        <div className='h-full w-full bg-gray-200 dark:bg-gray-800 flex justify-center items-center'>
+            <div className='flex justify-center items-center flex-col gap-4 bg-blue-500 p-10 rounded-2xl text-white shadow-2xl'>
+               <h1 className='text-3xl '>{data.name} is calling...</h1>
+                <div className='flex gap-4'>
+                <Button onClick={()=>{
+                    setIncoming(null);
+                    navigate('/meeting',{state:{...data,icecandidate:icecandidatebuffer}});
+                    }}
+                        className='bg-green-500 hover:bg-green-600 rounded-circle animate-bounce shadow-2xl' 
+                    ><IconVideo stroke={2} size={80} color='black'/></Button>
+                    <Button onClick={()=>{
+                        setIncoming(null);
+                        webs?.send(JSON.stringify({type:"call-rejected",userId:data.userId}));
+                    }}
+                        className='bg-red-500 hover:bg-red-600 rounded-circle shadow-2xl'
+                    ><IconPhoneOff stroke={2} size={80} /></Button>  
+                </div> 
+            </div>
+            
+            
         </div>
     )
 

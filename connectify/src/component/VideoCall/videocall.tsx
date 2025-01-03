@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
-import { websocketstate, callerid } from '../../recoil/atom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { websocketstate, user } from '../../recoil/atom';
+import { useRecoilValue } from 'recoil';
 import Calling from './Calling';
 import LiveCall from './LiveCall';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,8 +15,6 @@ const Videocall: React.FC = () => {
    ],
   };
   const [peerConnection,setperrConnection] = useState<RTCPeerConnection | null>(null);
-
-  const [flag,setFlag] = useState(false);
 
   function iceconnectionstate(){
     if(peerConnection === null) return;
@@ -46,7 +44,8 @@ const Videocall: React.FC = () => {
   const location = useLocation();
   const dataa = location.state;
   const websocket = useRecoilValue(websocketstate);
-  const icecandidatebuffer = useRef<any[]>([]);
+  const User = useRecoilValue(user);
+  const icecandidatebuffer = useRef<any[]>(dataa.type === "call" ? [] : dataa.icecandidate);
 
   const [state,setState] = useState(0);
 
@@ -61,7 +60,7 @@ const Videocall: React.FC = () => {
       const offer = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(offer);
 
-      websocket.send(JSON.stringify({ type: "offer", offer: offer, userId: dataa.id }));
+      websocket.send(JSON.stringify({ type: "offer", offer: offer, userId: dataa.id, name: User.name }));
 
       setState(1);
       intervalRef.current = setTimeout(() => {
@@ -229,7 +228,7 @@ const Videocall: React.FC = () => {
 
   return (
     <div>
-      {state === 0 && <Calling name={dataa.id || "e"} mediaStream={mediaStream}/>}
+      {state === 0 && <Calling name={dataa.name || "e"} mediaStream={mediaStream}/>}
       {state === 1 && <LiveCall peerConnectionRef={peerConnection} mediaStream={mediaStream} endcallfunction={endcallfunction}/>}
     </div>
   )

@@ -5,7 +5,7 @@ import {verifyToken} from '../utils/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import {decode} from 'jsonwebtoken';
 
-const userSocket = new Map<String, WebSocket>();
+export const userSocket = new Map<String, WebSocket>();
 
 export function WS_SERVER(server: http.Server) {
 
@@ -46,7 +46,7 @@ export function WS_SERVER(server: http.Server) {
             const socket = userSocket[userId];
 
             if(socket){
-              socket.send(JSON.stringify({ type: 'offer', offer: data.offer,userId:id.id }));
+              socket.send(JSON.stringify({ type: 'offer', offer: data.offer,userId:id.id, name: data.name }));
             }else{
               ws.send(JSON.stringify({ type: 'call-rejected',message:'User is offline', userId:id.id }));
             }
@@ -82,10 +82,8 @@ export function WS_SERVER(server: http.Server) {
           }
 
     });
-
         ws.on('close', () => {
           userSocket.delete(id.id);
-            console.log('Client disconnected');
         });
     });
 }

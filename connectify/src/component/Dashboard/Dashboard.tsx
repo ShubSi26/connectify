@@ -15,8 +15,6 @@ import { cn } from "../../lib/utils";
 import MainDashboard from "./MainDashboard";
 import axios from "axios";
 import {ChakraProvider} from "@chakra-ui/react";
-import sampleimage from "../../assets/sample.png";
-
 
 export default function Dashboar() {
   const links = [
@@ -161,22 +159,7 @@ const userState = useRecoilValue(user);
   else return <div className="w-full h-full flex flex-col sm:flex-row">
                 <ChakraProvider>
                   <MainDashboard/>
-                  <div className="w-full">
-                    <Rightbox/>
-                  </div>
+                  
                 </ChakraProvider>
               </div>
 };
-
-function Rightbox(){
-  const [userState, setUserState] = useRecoilState(user);
-  return(
-    <div className="h-full w-full flex justify-center items-center">
-       <div className="flex justify-center items-center flex-col">
-        <img src={sampleimage} alt="video call" className="h-96 w-110"/>
-        <div>Welcome, {userState.name}! Ready to connect with your team or loved ones?</div>
-        <div>Start or join a call now!</div>
-       </div>
-    </div>
-  )
-}

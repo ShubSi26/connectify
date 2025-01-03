@@ -13,15 +13,15 @@ export default function Calling({name,mediaStream}:{name:String,mediaStream:Medi
     }, [mediaStream,video]);
     
     return(
-        <div className="w-full h-full flex justify-center items-center flex-col">
-            <div className=" p-5 rounded-lg ">
-                <h1 className="text-2xl">Calling {name}</h1>
+        <div className="bg-blue-400 w-full h-screen flex justify-center items-center flex-col">
+            <div className=" p-5 rounded-lg text-white ">
+                <h1 className="text-4xl font-bold">Calling {name}</h1>
             </div>
             <Progress
                 size="sm"
                 isIndeterminate
                 aria-label="Loading..."
-                className="max-w-md en mt-5"
+                className="max-w-md en mt-5 bg-white"
             />
             <video
                 ref={videoRef}
