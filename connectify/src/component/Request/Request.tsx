@@ -74,7 +74,7 @@ function Incoming() {
     },[])
 
     function Accept(contact_id:String){
-        axios.post(`${url}/api/request/accept`,{contact_id},{withCredentials:true}).then((res)=>{
+        axios.post(`${url}/api/request/accept`,{contact_id},{withCredentials:true}).then(()=>{
             toast({
                 title: "Request Accepted",
                 status: "success",
@@ -94,7 +94,7 @@ function Incoming() {
     }
 
     function Reject(contact_id:String){
-        axios.post(`${url}/api/request/reject`,{contact_id},{withCredentials:true}).then((res)=>{
+        axios.post(`${url}/api/request/reject`,{contact_id},{withCredentials:true}).then(()=>{
             toast({
                 title: "Request Rejected",
                 status: "success",
@@ -176,7 +176,7 @@ function Outgoing() {
     },[])
 
     function Cancle(contact_id:String){
-        axios.post(`${url}/api/request/cancle`,{contact_id},{withCredentials:true}).then((res)=>{
+        axios.post(`${url}/api/request/cancle`,{contact_id},{withCredentials:true}).then(()=>{
             toast({
                 title: "Request Cancled",
                 status: "success",

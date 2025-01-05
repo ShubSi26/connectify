@@ -24,7 +24,7 @@ export default function Right() {
         }
         
         axios.post(`${url}/api/register`, user)
-        .then((res) => {
+        .then(() => {
             toast({
                 title: 'Account created.',
                 description: "We've created your account for you.",

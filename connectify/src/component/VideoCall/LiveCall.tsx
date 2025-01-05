@@ -46,7 +46,7 @@ export default function LiveCall({
   // Event handlers for dragging
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsDragging(true);
+    setIsDragging(false);
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -58,10 +58,12 @@ export default function LiveCall({
   };
 
   const handleMouseUp = () => {
-    setIsDragging(true);
+    setIsDragging(false);
   };
 
   useEffect(() => {
+    position
+    handleMouseDown
     if (isDragging) {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);

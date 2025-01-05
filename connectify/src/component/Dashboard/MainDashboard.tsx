@@ -174,7 +174,7 @@ function UserProfile({contact} :{contact:any}){
     const toast = useToast();
 
     function onAdd(){
-        axios.post(`${url}/api/request/send`,{ contact_id: contact._id },{withCredentials:true}).then((res)=>{
+        axios.post(`${url}/api/request/send`,{ contact_id: contact._id },{withCredentials:true}).then(()=>{
             toast({
                 title: 'Request Sent',
                 description: "the request has been sent",
