@@ -33,7 +33,7 @@ router.post('/', async (req: Request, res: Response) => {
         const token = createToken(userExists._id.toString());
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,  
+            secure: true,  
             sameSite: 'lax', 
             maxAge: 24 * 60 * 60 * 1000
           });
