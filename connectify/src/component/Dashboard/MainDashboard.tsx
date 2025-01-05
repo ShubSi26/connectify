@@ -5,20 +5,14 @@ import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import {websocketstate,apiURL,wsURL,user} from "../../recoil/atom";
 import { useRecoilState,useRecoilValue} from 'recoil';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,Route,Routes } from 'react-router-dom';
 import sampleimage from "../../assets/sample.png";
+import Request from "../Request/Request"
 
 export default function MainDashboard() {
 
-    const emil = useRef<HTMLInputElement>(null);
     const timeout = useRef<any>(null);
-
-    const [contact, setContact] = useState<any>(null);
-    const url = useRecoilValue(apiURL);
     const wsurl = useRecoilValue(wsURL);
-
-    const [flag, setFlag] = useState(false);
-
     const [webs,setWebSocket] = useRecoilState(websocketstate);
     const toast = useToast();
     const [incoming, setIncoming] = useState<any>(null);
@@ -79,6 +73,24 @@ export default function MainDashboard() {
         }
     },[webs])
 
+    return(<>
+        <Routes>
+              <Route path='/' element={<Contactboard/>}/>
+              <Route path='/request' element={<Request/>}/>
+        </Routes>
+
+        <div className="w-full">
+            {incoming && <Incomingbox data={incoming} setIncoming={setIncoming} webs={webs} icecandidate={icecandidatebuffer}/>}
+            {incoming === null && <Rightbox/>}
+        </div>
+    </>)
+}
+
+function Contactboard(){
+    const [flag, setFlag] = useState(false);
+    const [contact, setContact] = useState<any>(null);
+    const url = useRecoilValue(apiURL);
+    const emil = useRef<HTMLInputElement>(null);
     function ontype(){
         if(emil.current?.value === "")return;
         axios.post(`${url}/api/finduser`,{email:emil.current?.value},{withCredentials:true})
@@ -91,9 +103,8 @@ export default function MainDashboard() {
     }
 
     useEffect(()=>{},[flag])
-
-    return(<>
-        <div className="h-full w-full sm:w-max flex justify-center items-center flex-col p-2 bg-white">
+    return(
+        <div className="h-full w-full sm:w-max flex  items-center flex-col p-2 bg-white">
             <div className='flex '>
                 {flag === false ?<IconUserSearch className='h-8 w-8'/> : <IconX onClick={()=>setFlag(false)} className='h-8 w-8 cursor-pointer'/>}
                 <Input ref={emil} placeholder='Search User' className='sm:w-96'/>
@@ -102,14 +113,8 @@ export default function MainDashboard() {
             {flag === false ? <Contacts/> : <UserProfile contact={contact}/>}
             
         </div>
-        <div className="w-full">
-            {incoming && <Incomingbox data={incoming} setIncoming={setIncoming} webs={webs} icecandidate={icecandidatebuffer}/>}
-            {incoming === null && <Rightbox/>}
-        </div>
-    </>)
+    )
 }
-
-
 
 function Contacts(){
     
@@ -167,9 +172,10 @@ function ContactCard({contact}: { contact: Contact }){
 
 function UserProfile({contact} :{contact:any}){
     const url = useRecoilValue(apiURL);
+    console.log(contact);
 
     function onAdd(){
-        axios.post(`${url}/api/adduser`,{ email: contact.email },{withCredentials:true}).then((res)=>{
+        axios.post(`${url}/api/request/send`,{ contact_id: contact._id },{withCredentials:true}).then((res)=>{
             console.log(res.data.message);
         }).catch((err)=>{
             console.log(err);
@@ -177,13 +183,13 @@ function UserProfile({contact} :{contact:any}){
     }
 
     return(
-        <div className="h-full w-full flex flex-row justify-between items-center border-2 rounded sm:p-2 hover:bg-slate-200">
+        <div className=" w-full mt-4 flex flex-row justify-between items-center border-2 rounded sm:p-2 hover:bg-slate-200">
             <div>
                 <h1 className='text-2xl'>{contact.name}</h1>
                 <h1>{contact.email}</h1>
             </div>
             <div>
-                <Button onClick={onAdd} color="primary">Add</Button>
+                <Button onClick={onAdd} color="primary">Send Request</Button>
             </div>
         </div>
     )
@@ -207,7 +213,7 @@ function Incomingbox({data,setIncoming,webs,icecandidate}:{data:any,setIncoming:
 
     const navigate = useNavigate();
     const icecandidatebuffer = icecandidate.current;
-    
+    const toast = useToast();
     useEffect(()=>{
         const audio = new Audio('public/ringtone.mp3');
         audio.loop = true;
@@ -234,6 +240,13 @@ function Incomingbox({data,setIncoming,webs,icecandidate}:{data:any,setIncoming:
                     <Button onClick={()=>{
                         setIncoming(null);
                         webs?.send(JSON.stringify({type:"call-rejected",userId:data.userId}));
+                        toast({
+                            title: 'Call Rejected',
+                            description: "Call Rejected",
+                            status: 'error',
+                            duration: 2000,
+                            isClosable: true,
+                        });
                     }}
                         className='bg-red-500 hover:bg-red-600 rounded-circle shadow-2xl'
                     ><IconPhoneOff stroke={2} size={80} /></Button>  

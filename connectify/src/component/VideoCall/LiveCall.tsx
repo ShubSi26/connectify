@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { IconVideo } from '@tabler/icons-react';
+import { Spinner } from '@chakra-ui/react'
 
 export default function LiveCall({
   peerConnectionRef,
@@ -15,6 +16,7 @@ export default function LiveCall({
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [connecting,setConnecting] = useState<Boolean>(true);
 
   useEffect(() => {
     if (video.current && peerConnectionRef) {
@@ -22,12 +24,19 @@ export default function LiveCall({
         if (receiver.track) {
           const stream = new MediaStream([receiver.track]);
           video.current!.srcObject = stream; // Attach existing tracks to a video element
+          console.log(receiver.track);
         }
       });
 
       peerConnectionRef.ontrack = (event) => {
         video.current!.srcObject = event.streams[0];
       };
+
+      peerConnectionRef.onconnectionstatechange = () => {
+        if (peerConnectionRef.connectionState === "connected") {
+          setConnecting(false);
+        }
+      }
     }
 
     if (mediaStream && video2.current) {
@@ -84,6 +93,17 @@ export default function LiveCall({
           className="rounded-2xl w-96 fixed z-10 bottom-0 right-0"
           
         />
+        {connecting && <div className="absolute z-5 top-0 left-0 flex justify-center items-center flex-col h-screen w-screen">
+          <Spinner
+            thickness="4px"
+            speed="0.5s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+            className="w-fit"
+          />
+          <div className="mt-4">Connecting...</div>
+        </div>}
         <div onClick = {endcallfunction} className=" bg-red-500 rounded-full cursor-pointer fixed z-10 bottom-0 right-50 p-4">
           <IconVideo size={80} color="black" stroke={2} />
         </div>

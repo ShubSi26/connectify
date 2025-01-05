@@ -49,8 +49,6 @@ const Videocall: React.FC = () => {
 
   const [state,setState] = useState(0);
 
-  // Consider using a public STUN server list (e.g., from Xirsys or Coturn)
-
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -73,8 +71,10 @@ const Videocall: React.FC = () => {
         });
         intervalRef.current && clearInterval(intervalRef.current);
         intervalRef.current = null;
+        peerConnection.close();
+        websocket?.send(JSON.stringify({type:"call-ended",userId: dataa.id || dataa.userId}));
         navigate(-1);
-      },90000);
+      },30000);
     }
     if(dataa.type === "offer" && peerConnection){
       await acceptCall(dataa,peerConnection);
@@ -222,6 +222,13 @@ const Videocall: React.FC = () => {
       peerConnection.close();
       websocket?.send(JSON.stringify({type:"call-ended",userId: dataa.id || dataa.userId}));
       setperrConnection(null);
+      toast({
+        title: 'Call ended',
+        description: 'The call has ended',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
       navigate(-1);
     }
   }

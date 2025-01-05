@@ -13,17 +13,18 @@ function App() {
     <>
     <RecoilRoot>
       <NextUIProvider>
-        <BrowserRouter>
+        <BrowserRouter><ChakraProvider>
           <Routes>
             <Route element={<Auth/>}>
-              <Route path='/dashboard' element={<Dashboard/>}/>
-              <Route path='/meeting' element={<ChakraProvider><Videocall/></ChakraProvider>}/>
+              <Route path='/dashboard/*' element={<Dashboard/>}/>
+              <Route path='/meeting' element={<Videocall/>}/>
             </Route>
             <Route>
               <Route path='/' element={<Login/>}/>
               <Route path='/register' element={<Register/>}/>
             </Route>
           </Routes>
+          </ChakraProvider>
         </BrowserRouter>
       </NextUIProvider>
     </RecoilRoot>

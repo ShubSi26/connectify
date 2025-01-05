@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./sidebar";
 import {
   IconArrowLeft,
-  IconBrandTabler,
-  IconSettings,
-  IconUserBolt,
+  IconHome ,
+  IconUsersPlus ,
+  IconUser ,
+  IconUserFilled 
 } from "@tabler/icons-react";
 import {Link} from "react-router-dom";
 import { motion } from "framer-motion";
@@ -14,29 +15,28 @@ import {user,apiURL} from "../../recoil/atom";
 import { cn } from "../../lib/utils";
 import MainDashboard from "./MainDashboard";
 import axios from "axios";
-import {ChakraProvider} from "@chakra-ui/react";
 
 export default function Dashboar() {
   const links = [
     {
       label: "Dashboard",
-      href: "#",
+      href: "/dashboard",
       icon: (
-        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <IconHome  className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Profile",
       href: "#",
       icon: (
-        <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <IconUser  className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Request",
-      href: "#",
+      href: "/dashboard/request",
       icon: (
-        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        <IconUsersPlus  className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -84,13 +84,7 @@ export default function Dashboar() {
                 label: userState.name,
                 href: "#",
                 icon: (
-                  <img
-                    src="https://assets.aceternity.com/manu.png"
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={50}
-                    height={50}
-                    alt="Avatar"
-                  />
+                  <IconUserFilled />
                 ),
               }}
             />
@@ -157,9 +151,6 @@ const userState = useRecoilValue(user);
     </div>
   );
   else return <div className="w-full h-full flex flex-col sm:flex-row">
-                <ChakraProvider>
                   <MainDashboard/>
-                  
-                </ChakraProvider>
               </div>
 };
