@@ -32,10 +32,10 @@ export const callerid = atom<String | null>({
 
 export const apiURL = atom({
     key:"api",
-    default:"https://verbose-tribble-x7q9gx44w6vhqww-3000.app.github.dev"
+    default:"https://api-connectify.onrender.com"
 })
 
 export const wsURL = atom({
     key:"ws",
-    default:"wss://verbose-tribble-x7q9gx44w6vhqww-3000.app.github.dev"
+    default:"wss://api-connectify.onrender.com"
 })
