@@ -104,7 +104,7 @@ function Contactboard(){
 
     useEffect(()=>{},[flag])
     return(
-        <div className="h-full w-full sm:w-max flex  items-center flex-col p-2 bg-white">
+        <div className="h-full w-full sm:w-max flex items-center flex-col p-2 bg-white">
             <div className='flex '>
                 {flag === false ?<IconUserSearch className='h-8 w-8'/> : <IconX onClick={()=>setFlag(false)} className='h-8 w-8 cursor-pointer'/>}
                 <Input ref={emil} placeholder='Search User' className='sm:w-96'/>
@@ -123,7 +123,6 @@ function Contacts(){
 
     useEffect(()=>{
         axios.get(`${url}/api/getcontacts`,{withCredentials:true}).then((res)=>{
-            console.log(res.data.contacts);
             setContacts(res.data.contacts);
         }).catch((err)=>{
             console.log(err);
@@ -136,7 +135,7 @@ function Contacts(){
         </div>
     </>)
     else return (<>
-        <div className="h-full w-full flex flex-col">
+        <div className="h-full w-full flex flex-col items-center p-2 sm:p-0">
             {contacts.map((contact)=>{
                 return <ContactCard key={contact._id} contact={contact}/>
             })}
@@ -158,12 +157,12 @@ function ContactCard({contact}: { contact: Contact }){
     }
 
     return(<>
-        <div className="h-20 w-full sm:w-96 flex justify-between items-center bg-gray-200 dark:bg-gray-800 rounded-lg sm:p-4 m-2">
+        <div className="h-20 w-11/12 sm:w-96 flex justify-between items-center bg-gray-200 dark:bg-gray-800 rounded-lg sm:p-4 sm:m-2 ">
             <div className="flex items-center">
                 <h1 className="ml-4">{contact.name}</h1>
             </div>
             <div className="flex items-center">
-                <IconVideo onClick={()=>call(contact.userId)} className="h-8 w-8 hover:scale-150 cursor-pointer transition-all"/>
+                <IconVideo onClick={()=>call(contact.userId)} className="h-8 w-8 sm:m-0 m-2 hover:scale-150 cursor-pointer transition-all"/>
             </div>
         </div>
     </>)
@@ -172,11 +171,17 @@ function ContactCard({contact}: { contact: Contact }){
 
 function UserProfile({contact} :{contact:any}){
     const url = useRecoilValue(apiURL);
-    console.log(contact);
+    const toast = useToast();
 
     function onAdd(){
         axios.post(`${url}/api/request/send`,{ contact_id: contact._id },{withCredentials:true}).then((res)=>{
-            console.log(res.data.message);
+            toast({
+                title: 'Request Sent',
+                description: "the request has been sent",
+                status: 'success',
+                duration: 2000,
+                isClosable: true,
+            });
         }).catch((err)=>{
             console.log(err);
         })
@@ -199,7 +204,7 @@ function UserProfile({contact} :{contact:any}){
 function Rightbox(){
     const userState= useRecoilValue(user);
     return(
-      <div className="h-full w-full flex justify-center items-center">
+      <div className="h-full w-full hidden sm:flex justify-center items-center">
          <div className="flex justify-center items-center flex-col">
           <img src={sampleimage} alt="video call" className="h-96 w-110"/>
           <div>Welcome, {userState.name}! Ready to connect with your team or loved ones?</div>
@@ -227,7 +232,7 @@ function Incomingbox({data,setIncoming,webs,icecandidate}:{data:any,setIncoming:
     },[])
 
     return(
-        <div className='h-full w-full bg-gray-200 dark:bg-gray-800 flex justify-center items-center'>
+        <div className='absolute z-5 top-0 sm:static left-0 h-full w-full sm:bg-gray-200 dark:bg-gray-800 flex justify-center items-center'>
             <div className='flex justify-center items-center flex-col gap-4 bg-blue-500 p-10 rounded-2xl text-white shadow-2xl'>
                <h1 className='text-3xl '>{data.name} is calling...</h1>
                 <div className='flex gap-4'>

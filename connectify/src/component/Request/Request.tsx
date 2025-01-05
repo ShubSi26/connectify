@@ -5,6 +5,7 @@ import { apiURL } from "../../recoil/atom";
 import { useRecoilValue } from "recoil";
 import axios from "axios";
 import { IconClock } from '@tabler/icons-react';
+import { useToast } from "@chakra-ui/react";
 
 export default function Request() {
   const [active, setActive] = useState("incoming");
@@ -52,28 +53,63 @@ export default function Request() {
 function Incoming() {
     const url = useRecoilValue(apiURL);
     const [contacts, setContacts] = useState([]);
-    useEffect(()=>{
+    const toast = useToast();
+
+    function call(){
         axios.get(`${url}/api/request/incoming`,{withCredentials:true}).then((res)=>{
-            console.log(res.data.contacts);
             setContacts(res.data.contacts);
         }).catch((err)=>{
             console.log(err);
+            toast({
+                title: "Failed to fetch incoming requests",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            })
         })
+    }
+
+    useEffect(()=>{
+        call();
     },[])
 
     function Accept(contact_id:String){
         axios.post(`${url}/api/request/accept`,{contact_id},{withCredentials:true}).then((res)=>{
-            console.log(res.data);
+            toast({
+                title: "Request Accepted",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              })
+            call();
         }).catch((err)=>{
             console.log(err);
+            toast({
+                title: "Request Accept Failed",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            })
         })
     }
 
     function Reject(contact_id:String){
         axios.post(`${url}/api/request/reject`,{contact_id},{withCredentials:true}).then((res)=>{
-            console.log(res.data);
+            toast({
+                title: "Request Rejected",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+                })
+            call();
         }).catch((err)=>{
             console.log(err);
+            toast({
+                title: "Request Reject Failed",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            })
         })
     }
 
@@ -118,20 +154,44 @@ function Incoming() {
 function Outgoing() {
     const url = useRecoilValue(apiURL);
     const [contacts, setContacts] = useState<any>([]);
-    useEffect(()=>{
+    const toast = useToast();
+
+    function call(){
         axios.get(`${url}/api/request/outgoing`,{withCredentials:true}).then((res)=>{
-            console.log(res.data.contacts);
             setContacts(res.data.contacts);
+              
         }).catch((err)=>{
             console.log(err);
+            toast({
+                title: "Failed to fetch outgoing requests",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            })
         })
+    }
+
+    useEffect(()=>{
+        call();
     },[])
 
     function Cancle(contact_id:String){
         axios.post(`${url}/api/request/cancle`,{contact_id},{withCredentials:true}).then((res)=>{
-            console.log(res.data);
+            toast({
+                title: "Request Cancled",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+              })
+            call();
         }).catch((err)=>{
             console.log(err);
+            toast({
+                title: "Request Cancle Failed",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            })
         })
     }
 

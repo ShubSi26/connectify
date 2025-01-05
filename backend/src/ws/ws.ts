@@ -25,7 +25,12 @@ export function WS_SERVER(server: http.Server) {
     }
     try {
       const decoded = verifyToken(token) as JwtPayload;
-      userSocket.set(decoded.id, ws); // Correct usage of Map
+      if(userSocket.has(decoded.id)){
+        ws.close(1000, 'User already connected');
+        return;
+      }else{
+        userSocket.set(decoded.id, ws); 
+      }
     } catch (err) {
       ws.close(1000, 'Invalid token, Unauthorized');
       return;
@@ -35,10 +40,10 @@ export function WS_SERVER(server: http.Server) {
       const data = JSON.parse(message.toString());
       const { type, userId } = data;
 
-      console.log(data);
+      // console.log(data);
 
       if (type === 'offer') {
-        const socket = userSocket.get(userId); // Correct usage of Map
+        const socket = userSocket.get(userId); 
 
         if (socket) {
           socket.send(
@@ -52,29 +57,28 @@ export function WS_SERVER(server: http.Server) {
       }
 
       if (type === 'answer') {
-        const socket = userSocket.get(userId); // Correct usage of Map
+        const socket = userSocket.get(userId);
         if (socket) {
           socket.send(JSON.stringify({ type: 'answer', answer: data.answer, userId: id.id }));
         }
       }
 
       if (type === 'ICEcandidate') {
-        const socket = userSocket.get(userId); // Correct usage of Map
-        console.log(data);
+        const socket = userSocket.get(userId); 
         if (socket) {
           socket.send(JSON.stringify({ type: 'ICEcandidate', candidate: data.candidate, userId: id.id }));
         }
       }
 
       if (type === 'call-rejected') {
-        const socket = userSocket.get(userId); // Correct usage of Map
+        const socket = userSocket.get(userId);
         if (socket) {
           socket.send(JSON.stringify({ type: 'call-rejected', userId: id.id }));
         }
       }
 
       if (type === 'call-ended') {
-        const socket = userSocket.get(userId); // Correct usage of Map
+        const socket = userSocket.get(userId);
         if (socket) {
           socket.send(JSON.stringify({ type: 'call-ended', userId: id.id }));
         }
@@ -82,7 +86,7 @@ export function WS_SERVER(server: http.Server) {
     });
 
     ws.on('close', () => {
-      userSocket.delete(id.id); // Correct usage of Map
+      userSocket.delete(id.id);
     });
   });
 }

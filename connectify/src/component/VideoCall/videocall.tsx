@@ -90,14 +90,8 @@ const Videocall: React.FC = () => {
       connection();
     }
   }, [peerConnection]);
-
   
   async function acceptCall(data: any,peerConnection1:RTCPeerConnection | null) {
-    console.log("Accepting call:", data);
-
-      console.log("Setting remote description:", data.offer);
-
-      console.log("Setting remote peerConnection:", peerConnection1);
 
       if(peerConnection1){
         await peerConnection1.setRemoteDescription(data.offer);
@@ -141,7 +135,6 @@ const Videocall: React.FC = () => {
     if(mediaStream === null)getUserMedia();
 
     return () => {
-      console.log("Closing media stream");
         mediaStream?.getTracks().forEach(track => track.stop());
     };
   }, [mediaStream]);
@@ -160,14 +153,12 @@ const Videocall: React.FC = () => {
         // Handle incoming answer
         if (data.type === "answer") {
           intervalRef.current && clearInterval(intervalRef.current);
-          console.log("Call accepted:", data);
           await answerCall(data,peerConnection);
           setState(1);
         }
 
         // Handle incoming ICE candidates
         if (data.type === "ICEcandidate") {
-          console.log(peerConnection);
           await addIceCandidate(data.candidate);
         }
         // Handle call rejection
@@ -188,6 +179,13 @@ const Videocall: React.FC = () => {
         if(data.type === "call-ended"){
           peerConnection?.close();
           setperrConnection(null);
+          toast({
+            title: 'Call ended',
+            description: 'The calll has ended',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
           navigate(-1);
         }
       };

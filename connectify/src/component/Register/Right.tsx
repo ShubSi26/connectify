@@ -22,7 +22,6 @@ export default function Right() {
             email: email.current?.value,
             password: password.current?.value
         }
-        console.log(user);
         
         axios.post(`${url}/api/register`, user)
         .then((res) => {

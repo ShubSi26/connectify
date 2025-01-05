@@ -23,8 +23,7 @@ export default function LiveCall({
       peerConnectionRef.getReceivers().forEach((receiver) => {
         if (receiver.track) {
           const stream = new MediaStream([receiver.track]);
-          video.current!.srcObject = stream; // Attach existing tracks to a video element
-          console.log(receiver.track);
+          video.current!.srcObject = stream;
         }
       });
 
@@ -59,7 +58,7 @@ export default function LiveCall({
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
+    setIsDragging(true);
   };
 
   useEffect(() => {
@@ -78,19 +77,19 @@ export default function LiveCall({
   }, [isDragging]);
 
   return (
-    <div className="p-6 bg-blue-400">
-      <div className="bg-white flex sm:justify-center sm:items-center h-fit p-2 overflow-auto rounded-xl border-2 border-blue-900">
+    <div className="sm:p-6 bg-blue-400 h-full">
+      <div className="bg-white flex sm:justify-center sm:items-center h-full sm:p-2 overflow-auto sm:rounded-xl border-2 border-blue-900">
         <video
           ref={video}
           autoPlay
           playsInline
-          className="rounded-2xl h-screen"
+          className="sm:rounded-2xl h-screen sm:h-screen"
         />
         <video
           ref={video2}
           autoPlay
           playsInline
-          className="rounded-2xl w-96 fixed z-10 bottom-0 right-0"
+          className="rounded-2xl sm:w-96 w-28 fixed z-10 bottom-0 right-0"
           
         />
         {connecting && <div className="absolute z-5 top-0 left-0 flex justify-center items-center flex-col h-screen w-screen">
@@ -104,7 +103,7 @@ export default function LiveCall({
           />
           <div className="mt-4">Connecting...</div>
         </div>}
-        <div onClick = {endcallfunction} className=" bg-red-500 rounded-full cursor-pointer fixed z-10 bottom-0 right-50 p-4">
+        <div onClick = {endcallfunction} className=" bg-red-500 rounded-full cursor-pointer fixed z-10 bottom-0 right-50 p-4 hover:bg-red-400 hover:scale-110 transition-transform duration-300">
           <IconVideo size={80} color="black" stroke={2} />
         </div>
         
