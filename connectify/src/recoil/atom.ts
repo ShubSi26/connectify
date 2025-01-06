@@ -20,22 +20,12 @@ export const websocketstate = atom<WebSocket|null>({
     default:null
 })
 
-export const WebRtcState = atom<RTCPeerConnection | null >({
-    key: "WebRtcState",
-    default: null, 
-});
-
-export const callerid = atom<String | null>({
-    key:"caller",
-    default:null,
-})
-
 export const apiURL = atom({
     key:"api",
-    default:"https://api-connectify.onrender.com"
+    default:"https://localhost:3000"
 })
 
 export const wsURL = atom({
     key:"ws",
-    default:"wss://api-connectify.onrender.com"
+    default:"wss://localhost:3000"
 })

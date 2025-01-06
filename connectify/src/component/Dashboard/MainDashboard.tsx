@@ -220,7 +220,7 @@ function Incomingbox({data,setIncoming,webs,icecandidate}:{data:any,setIncoming:
     const icecandidatebuffer = icecandidate.current;
     const toast = useToast();
     useEffect(()=>{
-        const audio = new Audio('public/ringtone.mp3');
+        const audio = new Audio('ringtone.mp3');
         audio.loop = true;
         audio.play().catch((error) => {
         console.error("Error playing audio: ", error);
