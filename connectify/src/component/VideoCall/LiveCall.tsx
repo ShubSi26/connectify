@@ -19,6 +19,7 @@ export default function LiveCall({
   const [connecting,setConnecting] = useState<Boolean>(true);
 
   useEffect(() => {
+    
     if (video.current && peerConnectionRef) {
       peerConnectionRef.getReceivers().forEach((receiver) => {
         if (receiver.track) {
@@ -40,6 +41,7 @@ export default function LiveCall({
 
     if (mediaStream && video2.current) {
       video2.current.srcObject = mediaStream;
+      video2.current!.muted = true;
     }
   }, [peerConnectionRef]);
 
@@ -79,8 +81,8 @@ export default function LiveCall({
   }, [isDragging]);
 
   return (
-    <div className="sm:p-6 bg-blue-400 h-full">
-      <div className="bg-white flex sm:justify-center sm:items-center h-full sm:p-2 overflow-auto sm:rounded-xl border-2 border-blue-900">
+    <div className="sm:p-2 bg-slate-800 h-full overflow-hidden ">
+      <div className="bg-slate-700 flex sm:justify-center sm:items-center h-full sm:p-2 overflow-auto sm:rounded-xl ">
         <video
           ref={video}
           autoPlay
@@ -105,8 +107,11 @@ export default function LiveCall({
           />
           <div className="mt-4">Connecting...</div>
         </div>}
-        <div onClick = {endcallfunction} className=" bg-red-500 rounded-full cursor-pointer fixed z-10 bottom-0 right-50 p-4 hover:bg-red-400 hover:scale-110 transition-transform duration-300">
-          <IconVideo size={80} color="black" stroke={2} />
+        <div
+          onClick={endcallfunction}
+          className="bg-red-500 rounded-full cursor-pointer fixed z-20 bottom-4 left-1/2 transform -translate-x-1/2 p-4 hover:bg-red-400 hover:scale-110 transition-transform duration-300"
+        >
+          <IconVideo className="w-10 h-10 sm:w-20 sm:h-20 rounded-full" color="black" stroke={2} />
         </div>
         
       </div>

@@ -46,12 +46,12 @@ export default function Right() {
         })
     }
 
-    return(
-        <div className="w-1/2 flex justify-center items-center flex-col gap-4">
-            <div className="text-3xl font-bold">
+    return(<div className="sm:w-2/5 h-full sm:h-screen bg-white sm:pb-14 sm:pr-6  sm:rounded-none">
+        <div className="pt-6 sm:pt-0 sm:w-full h-full flex sm:justify-center items-center flex-col gap-4 rounded-tr-[50px] rounded-tl-[50px] sm:rounded-tr-[0px] sm:rounded-tl-[0px] sm:rounded-bl-[150px] sm:rounded-br-[100px] bg-blue-950">
+            <div className="text-3xl font-bold text-white">
                 Register with us
             </div>
-            <div className=" w-2/5 flex justify-center items-center flex-col gap-3">
+            <div className="w-4/5 sm:w-3/5 flex justify-center items-center flex-col gap-3">
                 <Input type="text" label="Name" ref={name} />
                 <Input type="email" label="Email" ref={email} />
                 <Input type="password" label="Password" ref={password} />
@@ -64,9 +64,9 @@ export default function Right() {
                     </div>
                 </button>
             </ChakraProvider>
-            <div>
+            <div className="text-white">
                 Have an Accoutn? <span className="text-blue-500 cursor-pointer" onClick={() => Navigate('/')}>Login </span>
             </div>
         </div>
-    )
+    </div>)
 }

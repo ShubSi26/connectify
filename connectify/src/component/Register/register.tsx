@@ -2,7 +2,7 @@ import LoginLeft from './LoginLeft';
 import Right from './Right';
 
 export default function Login() {
-    return(<div className='flex'>
+    return(<div  className='flex flex-col sm:flex-row h-screen min-w-full overflow-hidden bg-blue-950'>
         <LoginLeft/>
         <Right/>
     </div>)

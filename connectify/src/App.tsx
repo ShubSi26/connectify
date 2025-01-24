@@ -14,18 +14,19 @@ function App() {
     <>
     <RecoilRoot>
       <NextUIProvider>
-        <BrowserRouter><ChakraProvider>
-          <Routes>
-            <Route element={<Auth/>}>
-              <Route path='/dashboard/*' element={<Dashboard/>}/>
-              <Route path='/meeting' element={<Videocall/>}/>
-              <Route path='/logout' element={<Logout/>}/>
-            </Route>
-            <Route>
-              <Route path='/' element={<Login/>}/>
-              <Route path='/register' element={<Register/>}/>
-            </Route>
-          </Routes>
+        <BrowserRouter>
+          <ChakraProvider>
+            <Routes>
+              <Route element={<Auth/>}>
+                <Route path='/dashboard/*' element={<Dashboard/>}/>
+                <Route path='/meeting' element={<Videocall/>}/>
+                <Route path='/logout' element={<Logout/>}/>
+              </Route>
+              <Route>
+                <Route path='/' element={<Login/>}/>
+                <Route path='/register' element={<Register/>}/>
+              </Route>
+            </Routes>
           </ChakraProvider>
         </BrowserRouter>
       </NextUIProvider>

@@ -107,7 +107,7 @@ function Contactboard(){
         <div className="h-full w-full sm:w-max flex items-center flex-col p-2 bg-white">
             <div className='flex '>
                 {flag === false ?<IconUserSearch className='h-8 w-8'/> : <IconX onClick={()=>setFlag(false)} className='h-8 w-8 cursor-pointer'/>}
-                <Input ref={emil} placeholder='Search User' className='sm:w-96'/>
+                <Input ref={emil} placeholder='Search User' className='sm:w-96 w-full'/>
                 <IconArrowRight onClick={ontype} className='h-10 w-10 cursor-pointer'/>
             </div>
             {flag === false ? <Contacts/> : <UserProfile contact={contact}/>}
@@ -157,7 +157,7 @@ function ContactCard({contact}: { contact: Contact }){
     }
 
     return(<>
-        <div className="h-20 w-11/12 sm:w-96 flex justify-between items-center bg-gray-200 dark:bg-gray-800 rounded-lg sm:p-4 sm:m-2 ">
+        <div className="h-20 w-11/12 sm:w-96 flex justify-between items-center bg-gray-200 dark:bg-gray-800 rounded-lg sm:p-4 m-2 ">
             <div className="flex items-center">
                 <h1 className="ml-4">{contact.name}</h1>
             </div>
