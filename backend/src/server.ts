@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import routes from './routes/routes';
 import {WS_SERVER} from './ws/ws';
+import { Request, Response, NextFunction } from 'express';
 
 const app = express();
 const port = 3000;
@@ -17,6 +18,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/api', routes);
+app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+  console.error('Error:', err.message); 
+  res.status(500).json({
+      success: false,
+      message: 'An unexpected error occurred',
+  });
+});
 
 const server = http.createServer(app);
 WS_SERVER(server);

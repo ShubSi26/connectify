@@ -3,7 +3,6 @@ import z from 'zod';
 import bcrypt from 'bcryptjs';
 import user from '../utils/db';
 
-
 const router = express.Router();
 
 const registerSchema = z.object({
@@ -13,9 +12,9 @@ const registerSchema = z.object({
 });
 
 router.post('/', async (req, res) => {
-    const {name, email, password } = registerSchema.parse(req.body);
 
     try {
+        const {name, email, password } = registerSchema.parse(req.body);
         const userExists = await user.findOne({ email });
         if (userExists) {
             res.status(400).json({ message: 'User with this email already exists' });

@@ -5,6 +5,7 @@ import { useToast,ChakraProvider } from '@chakra-ui/react';
 import axios from "axios";
 import { apiURL } from "../../recoil/atom";
 import { useRecoilValue } from "recoil";
+import logo from "../../assets/logo.png";
 
 export default function Right() {  
 
@@ -22,8 +23,7 @@ export default function Right() {
             email: email.current?.value,
             password: password.current?.value
         }
-        
-        axios.post(`${url}/api/register`, user)
+        if(user.name && user.email && user.password ){axios.post(`${url}/api/register`, user)
         .then(() => {
             toast({
                 title: 'Account created.',
@@ -43,12 +43,25 @@ export default function Right() {
                 duration: 2000,
                 isClosable: true,
               })
-        })
+        })}
+        else{
+            toast({
+                title: 'Error',
+                description: "Please fill all the fields",
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+              })
+        }
     }
 
-    return(<div className="sm:w-2/5 h-full sm:h-screen bg-white sm:pb-14 sm:pr-6  sm:rounded-none">
-        <div className="pt-6 sm:pt-0 sm:w-full h-full flex sm:justify-center items-center flex-col gap-4 rounded-tr-[50px] rounded-tl-[50px] sm:rounded-tr-[0px] sm:rounded-tl-[0px] sm:rounded-bl-[150px] sm:rounded-br-[100px] bg-blue-950">
-            <div className="text-3xl font-bold text-white">
+    return(<div className="sm:w-2/5 h-full sm:bg-white sm:pb-14 sm:pr-6">
+        <div className="pt-6 sm:pt-0 sm:w-full h-full flex sm:justify-center items-center flex-col gap-4 ">
+            <div className="flex items-center h-20 ">
+                <img src={logo} alt="logo" className="w-12" />
+                <h1 className="text-4xl font-logo text-white sm:text-slate-600">Connectify</h1>
+            </div>
+            <div className="text-3xl font-bold text-white sm:text-slate-600">
                 Register with us
             </div>
             <div className="w-4/5 sm:w-3/5 flex justify-center items-center flex-col gap-3">
@@ -56,16 +69,14 @@ export default function Right() {
                 <Input type="email" label="Email" ref={email} />
                 <Input type="password" label="Password" ref={password} />
             </div>
-            <ChakraProvider>
                 <button onClick={registerUser} className="p-[3px] relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg" />
                     <div className="px-8 py-2  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
                         Register
                     </div>
                 </button>
-            </ChakraProvider>
-            <div className="text-white">
-                Have an Accoutn? <span className="text-blue-500 cursor-pointer" onClick={() => Navigate('/')}>Login </span>
+            <div className="text-white sm:text-slate-600">
+                Have an Account? <span className="text-blue-500 cursor-pointer" onClick={() => Navigate('/')}>Login </span>
             </div>
         </div>
     </div>)

@@ -8,6 +8,7 @@ import Dashboard from './component/Dashboard/Dashboard';
 import Videocall from './component/VideoCall/videocall';
 import {ChakraProvider} from "@chakra-ui/react";
 import Logout from './component/Logout/Logout';
+import NotFound from './component/Notfound/Notfound';
 function App() {
 
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route>
                 <Route path='/' element={<Login/>}/>
                 <Route path='/register' element={<Register/>}/>
+                <Route path='*' element={<NotFound/>}/>
               </Route>
             </Routes>
           </ChakraProvider>

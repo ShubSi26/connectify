@@ -4,7 +4,7 @@ import {Link, LinkProps} from "react-router-dom";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-
+import logo from "../../assets/logo.png";
 interface Links {
   label: string;
   href: string;
@@ -119,9 +119,10 @@ export const MobileSidebar = ({
         )}
         {...props}
       >
-        <div className="flex justify-between z-20 w-full">
-          <div>
-            <h1 className="text-lg font-semibold">Connectify</h1>
+        <div className="flex justify-between items-center z-20 w-full">
+          <div className="flex items-center h-10 ">
+            <img src={logo} alt="logo" className="w-8" />
+            <h1 className="text-xl font-logo text-slate-600">Connectify</h1>
           </div>
           <IconMenu2
             className="text-neutral-800 dark:text-neutral-200"

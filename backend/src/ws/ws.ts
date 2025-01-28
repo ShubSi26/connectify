@@ -26,7 +26,11 @@ export function WS_SERVER(server: http.Server) {
     try {
       const decoded = verifyToken(token) as JwtPayload;
       if(userSocket.has(decoded.id)){
-        ws.close(1000, 'User already connected');
+        const existingSocket = userSocket.get(decoded.id);
+        if (existingSocket) {
+          existingSocket.close(1000, 'User already connected');
+        }
+        userSocket.set(decoded.id, ws);
         return;
       }else{
         userSocket.set(decoded.id, ws); 

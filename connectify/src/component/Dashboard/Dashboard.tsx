@@ -15,6 +15,7 @@ import {user,apiURL} from "../../recoil/atom";
 import { cn } from "../../lib/utils";
 import MainDashboard from "./MainDashboard";
 import axios from "axios";
+import logo from "../../assets/logo.png";
 
 export default function Dashboar() {
   const links = [
@@ -101,11 +102,11 @@ export const Logo = () => {
       to="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <img src={logo} alt="logo" className="w-8" />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="font-medium text-black dark:text-white whitespace-pre"
+        className="text-2xl font-logo text-slate-60"
       >
         Connectify
       </motion.span>
@@ -118,7 +119,7 @@ export const LogoIcon = () => {
       to="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <img src={logo} alt="logo" className="w-8" />
     </Link>
   );
 };
