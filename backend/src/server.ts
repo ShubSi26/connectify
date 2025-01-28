@@ -3,6 +3,7 @@ import http from 'http';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
+import path from 'path';
 
 import routes from './routes/routes';
 import {WS_SERVER} from './ws/ws';
@@ -20,6 +21,9 @@ app.use(cookieParser());
 app.use(compression());
 
 app.use('/api', routes);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/index.html"));
+});
 app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   console.error('Error:', err.message); 
   res.status(500).json({
