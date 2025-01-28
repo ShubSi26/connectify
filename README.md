@@ -1,4 +1,4 @@
-# Connectify
+# <img src="https://github.com/ShubSi26/connectify/blob/main/connectify/src/assets/logo.png" alt="Connectify" width="35" /> Connectify
 
 ![](https://github.com/ShubSi26/connectify/blob/main/images/homepage.jpg)
 Deployment - https://connectify.devshubh.live
