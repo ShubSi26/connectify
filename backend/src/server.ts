@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import compression from 'compression';
 
 import routes from './routes/routes';
 import {WS_SERVER} from './ws/ws';
@@ -16,6 +17,7 @@ app.use(cors({
   }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(compression());
 
 app.use('/api', routes);
 app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
