@@ -1,7 +1,7 @@
 import {Input} from "@nextui-org/react";
 import { useNavigate} from "react-router-dom";
 import {useRef} from "react";
-import { useToast,ChakraProvider } from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
 import axios from "axios";
 import { apiURL } from "../../recoil/atom";
 import { useRecoilValue } from "recoil";
