@@ -10,3 +10,7 @@ More images - [Click Here](https://github.com/ShubSi26/connectify/tree/main/imag
 
 |`mongodb`|`express`|`react`|`nodejs`|`tailwindcss`|`vite`|`typescript`|`cloudflare`|`javascript`|`Docker`|`JWT`|`ZOD`|
 |---|---|---|---|---|---|---|---|---|---|---|---|
+
+# Architecture
+
+![](https://github.com/ShubSi26/connectify/blob/main/images/hld.png)
