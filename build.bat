@@ -12,9 +12,7 @@ call npm run build
 cd ..
 
 echo Building Docker image...
-docker build -t shubhamdockr/connectify:2.0 .
-
-docker push shubhamdockr/connectify:2.0
+docker build -t connectify .
 
 echo Build process completed!
 

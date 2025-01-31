@@ -13,7 +13,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors({
-    origin: 'https://connectify.devshubh.live', 
+    origin: 'http://localhost:3000', 
     credentials: true 
   }));
 
