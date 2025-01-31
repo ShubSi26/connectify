@@ -2,7 +2,7 @@ import { Progress } from "@nextui-org/react";
 import { video } from "framer-motion/client";
 import { useEffect, useRef } from "react";
 
-export default function Calling({name,mediaStream}:{name:String,mediaStream:MediaStream | null}) {
+export default function Calling({name,mediaStream}:{name:string,mediaStream:MediaStream | null}) {
 
     const videoRef = useRef<HTMLVideoElement>(null);
 

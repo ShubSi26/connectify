@@ -16,7 +16,7 @@ export default function LiveCall({
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const [connecting,setConnecting] = useState<Boolean>(true);
+  const [connecting,setConnecting] = useState<boolean>(true);
 
   useEffect(() => {
     

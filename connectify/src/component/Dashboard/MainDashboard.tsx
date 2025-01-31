@@ -158,7 +158,7 @@ interface Contact {
 function ContactCard({contact}: { contact: Contact }){
 
     const navigate = useNavigate();
-    function call(id:String){
+    function call(id:string){
         navigate('/meeting',{state:{type:'call',id:id,name:contact.name}});
     }
 
