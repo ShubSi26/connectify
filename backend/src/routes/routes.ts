@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 
 import login from './login';
 import register from './register';
@@ -17,5 +18,8 @@ router.use('/adduser', finduser);
 router.use('/getcontacts', getcontacts);
 router.use('/finduser', find)
 router.use('/request', request);
+router.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/index.html"));
+});
 
 export default router;
