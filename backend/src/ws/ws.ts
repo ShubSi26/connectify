@@ -4,6 +4,7 @@ import * as http from 'http';
 import {verifyToken} from '../utils/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import {decode} from 'jsonwebtoken';
+import {parse} from 'cookie';
 
 export const userSocket = new Map<String, WebSocket>();
 
@@ -12,31 +13,33 @@ export function WS_SERVER(server: http.Server) {
 
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     const cookies = req.headers.cookie;
-
+    
     if (!cookies) {
-      ws.close(1000, 'No token provided');
+      ws.send('No token provided');
+      ws.close(1000);
       return;
     }
-    const token = cookies.split('=')[1];
-
+    const parsedCookies = parse(cookies); 
+    const token = parsedCookies['token'];
+    
     if (!token) {
-      ws.close(1000, 'No token provided');
+      ws.send('No  token provided');
+      ws.close(1000);
       return;
     }
     try {
       const decoded = verifyToken(token) as JwtPayload;
-      if(userSocket.has(decoded.id)){
-        const existingSocket = userSocket.get(decoded.id);
-        if (existingSocket) {
-          existingSocket.close(1000, 'User already connected');
-        }
-        userSocket.set(decoded.id, ws);
-        return;
-      }else{
-        userSocket.set(decoded.id, ws); 
+
+      const extingSocket = userSocket.get(decoded.id);
+      if(extingSocket){
+        extingSocket.close(1000);
       }
+
+      userSocket.set(decoded.id, ws); 
+      
     } catch (err) {
-      ws.close(1000, 'Invalid token, Unauthorized');
+      ws.send('Invalid token, Unauthorized');
+      ws.close(1000);
       return;
     }
     const id = decode(token) as JwtPayload;

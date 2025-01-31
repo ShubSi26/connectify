@@ -21,10 +21,10 @@ export const websocketstate = atom<WebSocket|null>({
 
 export const apiURL = atom({
     key:"api",
-    default:"."
+    default:""
 })
 
 export const wsURL = atom({
     key:"ws",
-    default:"wss://connectify.devshubh.live"
+    default: `wss://${window.location.hostname}`
 })

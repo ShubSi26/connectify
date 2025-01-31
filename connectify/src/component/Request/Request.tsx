@@ -54,6 +54,7 @@ function Incoming() {
     const url = useRecoilValue(apiURL);
     const [contacts, setContacts] = useState([]);
     const toast = useToast();
+    console.log("api " + url)
 
     function call(){
         axios.get(`${url}/api/request/incoming`,{withCredentials:true}).then((res)=>{
@@ -115,7 +116,7 @@ function Incoming() {
 
   return (
     <div className="h-full w-full flex flex-col">
-      {contacts.length === 0 ? (
+      {(!contacts ||  contacts.length === 0) ? (
         <div className="flex justify-center items-center pt-5 font-bold text-3xl text-gray-600 font-mono">
           <div className="text-center">No Incoming Request</div>
         </div>
@@ -153,7 +154,7 @@ function Incoming() {
 
 function Outgoing() {
     const url = useRecoilValue(apiURL);
-    const [contacts, setContacts] = useState<any>([]);
+    const [contacts, setContacts] = useState([]);
     const toast = useToast();
 
     function call(){
@@ -194,10 +195,9 @@ function Outgoing() {
             })
         })
     }
-
   return (
     <div className="h-full w-full flex flex-col">
-      {contacts.length === 0 ? (
+      {(!contacts ||  contacts.length === 0)? (
         <div className="flex justify-center items-center pt-5 font-bold text-3xl text-gray-600 font-mono">
           <div className="text-center">No Outgoing Request</div>
         </div>

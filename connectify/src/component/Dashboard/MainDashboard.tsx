@@ -24,6 +24,7 @@ export default function MainDashboard() {
             ws = new WebSocket(`${wsurl}`);
 
             ws.onopen = () => {
+                setWebSocket(ws);
                 clearTimeout(timeout.current);
                 toast({
                     title: 'Connected',
@@ -34,7 +35,8 @@ export default function MainDashboard() {
                 });
             };
 
-            ws.onclose = () => {
+            ws.onclose = (event) => {
+                console.log(event);
                 toast({
                     title: 'Disconnected',
                     description: "Disconnected from server. Attempting to reconnect...",
@@ -42,18 +44,22 @@ export default function MainDashboard() {
                     duration: 2000,
                     isClosable: true,
                 });
+                setWebSocket(null);
                 clearTimeout(timeout.current);
-                timeout.current = setTimeout(() => {
-                    connect();
-                }, 3000);
+                
             };
 
-            setWebSocket(ws);
+            ws.onerror = (error) => {
+                connect();
+                console.log(error);
+            };
+
         };
 
     if(webs === null)connect();
 
-    },[])
+    },[webs])
+
     const icecandidatebuffer = useRef<any[]>([]);
     useEffect(()=>{
         if(webs){
