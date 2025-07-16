@@ -20,7 +20,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: frontend/dist
+          path: connectify/dist
           
   Building_Docker_Image:
     runs-on: ubuntu-latest
