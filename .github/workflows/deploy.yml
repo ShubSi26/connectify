@@ -16,11 +16,21 @@ jobs:
           cd connectify
           npm install
           npm run build
+      - name: React Build
+        run: |
+          cd backend
+          npm install
+          npm run build
       - name: Upload Frontend Build
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
           path: connectify/dist
+      - name: Upload Backend Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: backend/dist
           
   Building_Docker_Image:
     runs-on: ubuntu-latest
@@ -33,6 +43,11 @@ jobs:
         with:
           name: frontend-build
           path: connectify/dist
+      - name: Download Backend Build
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: backend/dist
       - name: Building Image
         run: docker build -t shubhamdockr/connectify:latest .
       - name: Save Docker image
