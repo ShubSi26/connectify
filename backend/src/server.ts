@@ -29,7 +29,7 @@ app.use(compression());
 app.use(express.static(path.join(__dirname, "./public")));
 app.use('/api', routes);
 app.use('/health', (req, res) => {
-  res.status(200).send('Server is running');
+  res.status(200).send('Server is running!');
 });
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, "./public/index.html"));
